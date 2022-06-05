@@ -420,7 +420,6 @@ namespace ZendeskAPIUipath
 
         protected override void Execute(CodeActivityContext context)
         {
-            
             int ticketId = TicketId.Get(context);
             string attachmentDirectoryPath = AttachmentDirectoryPath.Get(context);
             string fileName = FileName.Get(context);
