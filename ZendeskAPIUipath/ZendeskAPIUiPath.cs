@@ -447,7 +447,7 @@ namespace ZendeskAPIUipath
     }
     #endregion
 
-    #region GetZendeskTicket
+    #region GetTicketWithSelectedMID
     public class GetTicketWithSelectedMID : CodeActivity
     {
         #region Parameters From UiPath Base
