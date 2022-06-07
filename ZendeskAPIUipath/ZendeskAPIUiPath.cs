@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -54,6 +55,7 @@ namespace ZendeskAPIUipath
                 using (var client = new HttpClient())
                 {
                     var endpoint = new Uri(baseURL + "/api/v2/tickets/" + ticketId);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(userName,apiKey);
                     var result = client.GetAsync(endpoint).Result;
                     var jsonOutput = result.Content.ReadAsStringAsync().Result;
@@ -161,6 +163,7 @@ namespace ZendeskAPIUipath
             {
                 using (var client = new HttpClient())
                 {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(userName, apiKey);
                     var endpoint = new Uri(baseURL + "/api/v2/tickets");
                     Comment comment = new Comment() { body = body };
@@ -183,6 +186,7 @@ namespace ZendeskAPIUipath
                         ticket = zendeskTicketModel,
                     };
                     var newPostJson = JsonSerializer.Serialize(ticketRoot);
+                    Console.WriteLine(newPostJson);
                     var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
                     var result = client.PostAsync(endpoint, payload).Result;
                     var jsonOutput = result.Content.ReadAsStringAsync().Result;
@@ -296,8 +300,10 @@ namespace ZendeskAPIUipath
             {
                 using (var client = new HttpClient())
                 {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(userName, apiKey);
                     var endpoint = new Uri(baseURL + "/api/v2/tickets/" + ticketId);
+                    Console.WriteLine(endpoint);
                     Comment comment = new Comment() { body = body };
                     ZendeskTicketModel zendeskTicketModel = new ZendeskTicketModel()
                     {
@@ -319,7 +325,7 @@ namespace ZendeskAPIUipath
                     };
                     var newPostJson = JsonSerializer.Serialize(ticketRoot);
                     var payload = new StringContent(newPostJson, Encoding.UTF8, "application/json");
-                    var result = client.PostAsync(endpoint, payload).Result;
+                    var result = client.PutAsync(endpoint, payload).Result;
                     var jsonOutput = result.Content.ReadAsStringAsync().Result;
 
                     RequestOutput.Set(context, jsonOutput);
@@ -375,6 +381,7 @@ namespace ZendeskAPIUipath
                 using (var client = new HttpClient())
                 {
                     var endpoint = new Uri(baseURL + "/api/v2/tickets/"+ ticketId + "/comments");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(userName, apiKey);
                     var result = client.GetAsync(endpoint).Result;
                     var jsonOutput = result.Content.ReadAsStringAsync().Result;
@@ -400,22 +407,22 @@ namespace ZendeskAPIUipath
 
         [Category("Input")]
         [RequiredArgument]
-        [Description("Enter Attachmen tDirectory Path")]
+        [Description("Enter Attachment destination Directory Path.")]
         public InArgument<string> AttachmentDirectoryPath { get; set; }
 
         [Category("Input")]
         [RequiredArgument]
-        [Description("Enter File name")]
+        [Description("Enter downloaded File new name")]
         public InArgument<string> FileName { get; set; }
 
         [Category("Input")]
         [RequiredArgument]
-        [Description("Enter AttachmentUrl From Zendesk Ticket")]
+        [Description("Enter AttachmentUrl From Zendesk Ticket, content_url")]
         public InArgument<string> AttachmentUrl { get; set; }
 
         [Category("Output")]
         [RequiredArgument]
-        [Description("Request Output")]
+        [Description("Request Output with file path in format: date, fileName, TicketId ")]
         public OutArgument<string> OutputPath { get; set; }
 
         protected override void Execute(CodeActivityContext context)
@@ -427,15 +434,15 @@ namespace ZendeskAPIUipath
 
             try
             {
-                var filePath = attachmentDirectoryPath + DateTime.Now.ToString("ddMMMyyyy") + "_" + fileName + "_TicketId" + ticketId + ".xlsx";
-                if (!Directory.Exists(filePath))
+                var filePath = attachmentDirectoryPath + "_" + DateTime.Now.ToString("ddMMMyyyy") + "_" + fileName + "_TicketId" + ticketId + ".xlsx";
+                if (!Directory.Exists(attachmentDirectoryPath))
                 {
-                    Directory.CreateDirectory(filePath);
+                    Directory.CreateDirectory(attachmentDirectoryPath);
                 }
                 using (var client = new WebClient())
                 {
                     var endpoint = new Uri(attachmentUrl);
-                    client.DownloadFileAsync(endpoint, filePath);
+                    client.DownloadFile(endpoint, filePath);
                 }
                 OutputPath.Set(context, filePath);
             }
@@ -489,6 +496,7 @@ namespace ZendeskAPIUipath
                 using (var client = new HttpClient())
                 {
                     var endpoint = new Uri(baseURL + "/api/v2/search?query=/" + mid);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(userName, apiKey);
                     var result = client.GetAsync(endpoint).Result;
                     var jsonOutput = result.Content.ReadAsStringAsync().Result;
@@ -546,6 +554,7 @@ namespace ZendeskAPIUipath
                 using (var client = new HttpClient())
                 {
                     var endpoint = new Uri(baseURL + "/api/v2/views/"+viewId+"/tickets");
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(userName, apiKey);
                     var result = client.GetAsync(endpoint).Result;
                     var jsonOutput = result.Content.ReadAsStringAsync().Result;
