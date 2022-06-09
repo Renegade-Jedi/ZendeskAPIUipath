@@ -130,6 +130,14 @@ namespace ZendeskAPIUipath
         public InArgument<int> Submitter_id { get; set; }
 
         [Category("Input")]
+        [Description("The user who submitted the ticket. The submitter always becomes the author of the first comment on the ticket")]
+        public InArgument<int> Ticket_form_id { get; set; }
+
+        [Category("Input")]
+        [Description("The type of this ticket. Allowed values are problem, incident, question, or task.")]
+        public InArgument<string> Type { get; set; }
+
+        [Category("Input")]
         [Description("The array of tags applied to this ticket")]
         public InArgument<List<string>> Tags { get; set; }
 
@@ -154,6 +162,8 @@ namespace ZendeskAPIUipath
             string status = Status.Get(context);
             string subject = Subject.Get(context);
             int submitterId = Submitter_id.Get(context);
+            int ticketFormId = Ticket_form_id.Get(context);
+            string type = Type.Get(context);
             List<string> tags = Tags.Get(context);
             string body = Body.Get(context);
 
@@ -177,6 +187,8 @@ namespace ZendeskAPIUipath
                         status = status,
                         subject = subject,
                         submitter_id = submitterId,
+                        ticket_form_id = ticketFormId,
+                        type = type,
                         tags = tags,
                         comment = comment,
                     };
@@ -261,6 +273,14 @@ namespace ZendeskAPIUipath
         public InArgument<int> Submitter_id { get; set; }
 
         [Category("Input")]
+        [Description("The user who submitted the ticket. The submitter always becomes the author of the first comment on the ticket")]
+        public InArgument<int> Ticket_form_id { get; set; }
+
+        [Category("Input")]
+        [Description("The type of this ticket. Allowed values are problem, incident, question, or task.")]
+        public InArgument<string> Type { get; set; }
+
+        [Category("Input")]
         [Description("The array of tags applied to this ticket")]
         public InArgument<List<string>> Tags { get; set; }
 
@@ -290,6 +310,8 @@ namespace ZendeskAPIUipath
             string status = Status.Get(context);
             string subject = Subject.Get(context);
             int submitterId = Submitter_id.Get(context);
+            int ticketFormId = Ticket_form_id.Get(context);
+            string type = Type.Get(context);
             List<string> tags = Tags.Get(context);
             string body = Body.Get(context);
             int ticketId = Ticket_id.Get(context);
@@ -315,6 +337,8 @@ namespace ZendeskAPIUipath
                         status = status,
                         subject = subject,
                         submitter_id = submitterId,
+                        ticket_form_id = ticketFormId,
+                        type = type,
                         tags = tags,
                         comment = comment,
                     };

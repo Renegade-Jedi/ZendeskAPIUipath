@@ -31,9 +31,16 @@ namespace ZendeskAPIUipath
         
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int submitter_id { get; set; }
-        
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public int ticket_form_id { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public string type { get; set; }
+
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public List<string> tags { get; set; }
+       
         public Comment comment { get; set; }
     }
 
